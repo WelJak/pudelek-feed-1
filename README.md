@@ -29,4 +29,4 @@ Architektura mikroserwisowa. Komunikacja odbywa się przy pomocy kolejki rabbitm
 
 ### Plan działania
 * Sprinty tygodniowe, codzienne daily
-* Progress sprawdzany przy pomocy kanban boardu: https://github.com/solveretur/pudelek-feed/projects/1
+* Progress sprawdzany przy pomocy kanban boardu: https://github.com/solveretur/pudelek-feed/projects/2
