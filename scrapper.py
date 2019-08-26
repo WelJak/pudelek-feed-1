@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as uReq
-import csv
+
 
 url = 'https://www.pudelek.pl'
 client = uReq(url)
@@ -12,7 +12,7 @@ entries = page_soup.findAll("div", {"class":"entry"})
 filename = "entries.csv"
 f = open(filename, "w")
 
-headers = 'id; add_time; title; description; tags \n'
+headers = 'id; add_time; title; description; tags; links \n'
 
 f.write(headers)
 
@@ -26,7 +26,9 @@ for entry in entries:
     children = a.findChildren("a", recursive=False)
     for i in range(len(children)):
         tag = tag + '/' + children[i].text.strip()
-    f.write(entry_id + "; " + time + "; " + title + "; " + desc + "; " + tag + "\n")
+    for a in entry.find_all('a', href=True):
+        links = a['href']
+    f.write(entry_id + "; " + time + "; " + title + "; " + desc + "; " + tag + "; " + links + "\n")
 
 f.close()
 
