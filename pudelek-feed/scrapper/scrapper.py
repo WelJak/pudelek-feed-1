@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as uReq
 
-def get_list_of_entries():
+def fetch_list_of_entries():
 
     url = 'https://www.pudelek.pl'
     client = uReq(url)
@@ -30,5 +30,5 @@ def get_list_of_entries():
 
 
 if __name__ == '__main__':
-    print(get_list_of_entries())
+    print(fetch_list_of_entries())
 
