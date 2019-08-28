@@ -1,4 +1,4 @@
-from checker import Checker
+from .checker import Checker
 
 class InMemoryChecker(Check):
     def __init__(self, entries):
