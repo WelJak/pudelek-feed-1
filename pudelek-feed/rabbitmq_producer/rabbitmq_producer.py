@@ -1,9 +1,9 @@
-from scrapper import fetch_list_of_entries
+
 import pika
 import json
 
 
-class RabbitSend():
+class RabbitmqProducer():
 
     def __init__(self, login, password, host, port, virtual_host, routing_key):
         self.credentials = pika.PlainCredentials(login, password)
@@ -39,8 +39,4 @@ class RabbitSend():
                                       virtual_host=self.virtual_host))
         self.channel = self.connection.channel()
 
-if __name__ == '__main__':
-    m = fetch_list_of_entries()
-    x = RabbitSend('admin', 'admin', 'localhost', 5672, 'PUDELEK', 'pudelek-feed')
-    x.send_message(m[0])
-    x.connection_close()
+

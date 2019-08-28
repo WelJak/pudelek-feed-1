@@ -1,13 +1,6 @@
+from checker import Checker
 
-class InMemoryBase:
-    def check(self):
-        pass
-
-    def mark(self):
-        pass
-
-
-class InMemory(InMemoryBase):
+class InMemoryChecker(Check):
     def __init__(self, entries):
         self.entries = list(entries)
 
