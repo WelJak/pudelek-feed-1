@@ -1,14 +1,16 @@
-
 import pika
 import json
+import sys
+import traceback
 
 
 class RabbitmqProducer():
 
-    def __init__(self, login, password, host, port, virtual_host, routing_key):
+    def __init__(self, login, password, host, exchange, virtual_host, routing_key):
         self.credentials = pika.PlainCredentials(login, password)
         self.host = host
-        self.port = port
+        self.exchange = exchange
+        self.port = 5672
         self.virtual_host = virtual_host
         self.routing_key = routing_key
         self.connection = pika.BlockingConnection(
@@ -18,14 +20,15 @@ class RabbitmqProducer():
 
     def send_message(self, message):
         try:
-            body = json.dumps(message)
-            self.channel.basic_publish(exchange='',
-                                      routing_key=self.routing_key,
-                                      body=body)
-            print('message sent')
+            body = json.dumps(message, ensure_ascii=False)
+            self.channel.basic_publish(exchange=self.exchange,
+                                       routing_key=self.routing_key,
+                                       body=body)
+            print('Message: {} has been sent'.format(message))
             return True
         except:
-            print('something went wrong')
+            print('An error occurred during sending message {}'.format(message))
+            traceback.print_exc(file=sys.stdout)
             self.restart_connection()
             return False
 
@@ -38,5 +41,3 @@ class RabbitmqProducer():
             pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.credentials,
                                       virtual_host=self.virtual_host))
         self.channel = self.connection.channel()
-
-

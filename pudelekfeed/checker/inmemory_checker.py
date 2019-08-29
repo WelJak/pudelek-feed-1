@@ -1,19 +1,18 @@
-from .checker import Checker
+from pudlas.pudelekfeed.checker.checker import Checker
 
-class InMemoryChecker(Check):
-    def __init__(self, entries):
-        self.entries = list(entries)
+
+class InMemoryChecker(Checker):
+    def __init__(self):
+        self.entries = []
 
     def check(self, entry):
         if entry in self.entries:
-            print('message was already sent')
+            print('message: {} has been already sent'.format(entry))
             return False
         else:
-            print('message has not been sent yet')
+            print('message: {} has not been sent yet'.format(entry))
             return True
 
     def mark(self, entry):
         self.entries.append(entry)
-        print('message added to list of already sent messages')
-
-
+        print('message: {} has been added to list of already sent messages'.format(entry))

@@ -4,7 +4,3 @@ class Checker:
 
     def mark(self):
         pass
-
-
-
-
