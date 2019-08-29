@@ -6,12 +6,13 @@ import json
 import time
 import sys
 import traceback
+from pudlas.pudelekfeed import logger
 
 try:
     scrapper = Scrapper()
     checker = InMemoryChecker()
     producer = RabbitmqProducer('admin', 'admin', 'localhost', '', 'PUDELEK', 'pudelek-feed')
-
+    sleeptime = 120
     while 1:
         entries = scrapper.fetch_list_of_entries()
 
@@ -24,9 +25,10 @@ try:
 
             else:
                 pass
+               # logger.info('Message wit uuid: {} is marked as sent'.format(entry['uuid']))
 
-        time.sleep(120)
+        time.sleep(sleeptime)
 
 except:
-    print('An error occurred during process:')
+    logger.info('An error occurred during process:')
     traceback.print_exc(file=sys.stdout)

@@ -2,6 +2,7 @@ import pika
 import json
 import sys
 import traceback
+from pudlas.pudelekfeed import logger
 
 
 class RabbitmqProducer():
@@ -24,10 +25,10 @@ class RabbitmqProducer():
             self.channel.basic_publish(exchange=self.exchange,
                                        routing_key=self.routing_key,
                                        body=body)
-            print('Message: {} has been sent'.format(message))
+            logger.info('Message: {} has been sent'.format(message))
             return True
         except:
-            print('An error occurred during sending message {}'.format(message))
+            logger.info('An error occurred during sending message {}'.format(message))
             traceback.print_exc(file=sys.stdout)
             self.restart_connection()
             return False
