@@ -1,11 +1,11 @@
-import pika
-import json
 import sys
 import traceback
+import pika
+
 from pudlas.pudelekfeed import logger
 
 
-class RabbitmqProducer():
+class RabbitmqProducer:
 
     def __init__(self, login, password, host, exchange, virtual_host, routing_key):
         self.credentials = pika.PlainCredentials(login, password)
@@ -21,10 +21,9 @@ class RabbitmqProducer():
 
     def send_message(self, message):
         try:
-            body = json.dumps(message, ensure_ascii=False)
             self.channel.basic_publish(exchange=self.exchange,
                                        routing_key=self.routing_key,
-                                       body=body)
+                                       body=message)
             logger.info('Message: {} has been sent'.format(message))
             return True
         except:
