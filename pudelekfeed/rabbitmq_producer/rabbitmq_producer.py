@@ -2,7 +2,7 @@ import sys
 import traceback
 import pika
 
-from pudlas.pudelekfeed import logger
+from pudelekfeed import logger
 
 
 class RabbitmqProducer:

@@ -9,15 +9,16 @@ from pudlas.pudelekfeed import logger
 class Scrapper:
     def __init__(self, url):
         self.url = url
-        self.client = ureq(self.url)
 
     def fetch_messages_from_pudelek(self):
         try:
-            page_html = self.client.read()
-            self.client.close()
+            client = ureq(self.url)
+            page_html = client.read()
+            client.close()
         except:
             logger.info('An error occurred during establishing connection with {}'.format(self.url))
             traceback.print_exc(file=sys.stdout)
+            client.close()
         page_soup = Soup(page_html, "html.parser")
         entries = page_soup.findAll("div", {"class": "entry"})
         output = list(map(lambda part: self.create_output_part(part), entries))
