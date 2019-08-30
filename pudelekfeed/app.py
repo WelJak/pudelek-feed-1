@@ -1,46 +1,37 @@
-import json
-import sys
 import time
-import traceback
 import uuid
 
-from pudelekfeed import logger
 from pudelekfeed.checker.inmemory_checker import *
 from pudelekfeed.rabbitmq_producer.rabbitmq_producer import *
 from pudelekfeed.scrapper.scrapper import *
 
+FEED_TYPE = 'PUDELEK'
+SLEEP_TIME_IN_SECONDS = 5
+WEBSITE_URL = 'https://www.pudelek.pl'
+
 
 class App:
-    def __init__(self):
-        self.sleeptime = 5
 
     def main(self):
         try:
-            scrapper = Scrapper('https://www.pudelek.pl')
+            scrapper = Scrapper(WEBSITE_URL)
             checker = InMemoryChecker()
-            producer = RabbitmqProducer('admin', 'admin', 'localhost', '', 'PUDELEK', 'pudelek-feed')
+            producer = RabbitmqProducer('admin', 'admin', 'localhost', 'feed-exchange', 'PUDELEK', 'pudelek-feed')
             while 1:
-                entries = scrapper.fetch_messages_from_pudelek()
-                messages_to_send = list(filter(lambda message: checker.check(message), entries))
-                messages_with_uuid = list(map(lambda message: self.add_message_uuid_and_type(message, 'Pudelek'), messages_to_send))
-                messages_to_mark = list(filter(lambda message: producer.send_message(message), messages_with_uuid))
-                marked_messages = list(map(lambda message: checker.mark(message), messages_to_mark))
-                #for entry in entries:
-                   # if checker.check(entry):
-                        #checker.mark(entry)
-                       # body = json.dumps({'uuid': str(uuid.uuid1()), 'type': 'Pudelek', 'message': entry}, ensure_ascii=False)
-                       # body = json.dumps(entry, ensure_ascii=False)
-                       # producer.send_message(body)
-                        #checker.mark(entry)
-                time.sleep(self.sleeptime)
-        except:
+                news = scrapper.fetch_news_from_website()
+                news_to_send = list(filter(lambda message: checker.check(message), news))
+                messages = list(map(lambda message: self.create_message(message), news_to_send))
+                for msg in messages:
+                    response = producer.send_message(msg)
+                    if response:
+                        checker.mark(msg['message'])
+                time.sleep(SLEEP_TIME_IN_SECONDS)
+        except Exception as e:
             logger.info('An error occurred during process:')
             traceback.print_exc(file=sys.stdout)
 
-    def add_message_uuid_and_type(self, message, type):
-        modified_message = {'uuid': str(uuid.uuid1()), 'type': type}
-        modified_message.update(message)
-        return json.dumps(modified_message, ensure_ascii=False)
+    def create_message(self, message):
+        return {'uuid': str(uuid.uuid1()), 'type': FEED_TYPE, 'message': message}
 
 
 x = App()

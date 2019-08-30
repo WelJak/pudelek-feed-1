@@ -1,5 +1,7 @@
+import json
 import sys
 import traceback
+
 import pika
 
 from pudelekfeed import logger
@@ -21,9 +23,10 @@ class RabbitmqProducer:
 
     def send_message(self, message):
         try:
+            body = json.dumps(message, ensure_ascii=False)
             self.channel.basic_publish(exchange=self.exchange,
                                        routing_key=self.routing_key,
-                                       body=message)
+                                       body=body)
             logger.info('Message: {} has been sent'.format(message))
             return True
         except:
