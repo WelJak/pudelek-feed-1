@@ -1,9 +1,24 @@
 import time
 import uuid
+import json
 
 from pudelekfeed.checker.inmemory_checker import *
 from pudelekfeed.rabbitmq_producer.rabbitmq_producer import *
 from pudelekfeed.scrapper.scrapper import *
+
+try:
+    with open('definitions.json') as config_file:
+        data = json.load(config_file)
+
+    LOGIN = data['users'][0]['name']
+    PASSWORD = data['users'][0]['password']
+    # HOST = trzeba bedzie dodac do pliku konfiguracyjnego
+    EXCHANGE = data['exchanges'][0]['name']
+    VHOST = data['bindings'][0]['vhost']
+    ROUTING_KEY = data['bindings'][0]['destination']
+except Exception:
+    logger.info('An error occurred during processing config file:')
+    traceback.print_exc(file=sys.stdout)
 
 FEED_TYPE = 'PUDELEK'
 SLEEP_TIME_IN_SECONDS = 5
@@ -16,7 +31,7 @@ class App:
         try:
             scrapper = Scrapper(WEBSITE_URL)
             checker = InMemoryChecker()
-            producer = RabbitmqProducer('admin', 'admin', 'localhost', 'feed-exchange', 'PUDELEK', 'pudelek-feed')
+            producer = RabbitmqProducer(LOGIN, PASSWORD, 'localhost', EXCHANGE, VHOST, ROUTING_KEY) #pozniej zamiast 'localhost' -> zmienna HOST
             while 1:
                 news = scrapper.fetch_news_from_website()
                 news_to_send = list(filter(lambda message: checker.check(message), news))
