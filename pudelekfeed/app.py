@@ -20,6 +20,7 @@ SLEEP_TIME_IN_SECONDS = 'SLEEP_TIME_IN_SECONDS'
 WEBSITE_URL = 'https://www.pudelek.pl'
 DEFAULT_PROFILE = "LOCAL"
 
+
 class App:
 
     def main(self):
