@@ -1,6 +1,6 @@
 import unittest
 
-from .inmemory_checker import *
+from pudelekfeed.checker.inmemory_checker import *
 
 
 class InMemoryCheckerTest(unittest.TestCase):

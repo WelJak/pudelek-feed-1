@@ -1,6 +1,6 @@
 import unittest
 
-from .rabbitmq_producer import *
+from pudelekfeed.rabbitmq_producer.rabbitmq_producer import *
 
 
 class RabbitmqProducerTest(unittest.TestCase):
