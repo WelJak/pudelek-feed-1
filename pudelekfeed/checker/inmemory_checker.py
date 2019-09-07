@@ -1,5 +1,6 @@
-from .checker import Checker
 from pudelekfeed import logger
+from .checker import Checker
+
 
 class InMemoryChecker(Checker):
     def __init__(self):
