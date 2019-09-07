@@ -60,7 +60,7 @@ class App:
         exchange = config[profile][RABBIT_EXCHANGE]
         vhost = config[profile][RABBIT_VHOST]
         routing_key = config[profile][RABBIT_ROUTING_KEY]
-        sleep_time_in_seconds = config[profile][SLEEP_TIME_IN_SECONDS]
+        sleep_time_in_seconds = config[profile].getint(SLEEP_TIME_IN_SECONDS)
         return host, login, password, exchange, vhost, routing_key, sleep_time_in_seconds
 
 
