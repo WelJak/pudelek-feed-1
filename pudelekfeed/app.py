@@ -18,12 +18,12 @@ CONFIG_FILE = "variables.ini"
 FEED_TYPE = 'PUDELEK'
 SLEEP_TIME_IN_SECONDS = 'SLEEP_TIME_IN_SECONDS'
 WEBSITE_URL = 'https://www.pudelek.pl'
-
+DEFAULT_PROFILE = "LOCAL"
 
 class App:
 
     def main(self):
-        profile = os.getenv('ENVIRONMENT', "LOCAL")
+        profile = os.getenv('ENVIRONMENT', DEFAULT_PROFILE)
         logger.info("Running pudelek feed with active profile: " + profile)
         host, login, password, exchange, vhost, routing_key, sleep_time_in_seconds = self.read_config_file(profile)
         try:
