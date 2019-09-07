@@ -4,7 +4,7 @@ from urllib.request import urlopen as ureq
 
 from bs4 import BeautifulSoup as Soup
 
-from pudelekfeed import logger
+import logger
 
 
 class Scrapper:

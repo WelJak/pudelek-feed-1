@@ -1,6 +1,6 @@
 class Checker:
-    def check(self):
+    def check(self, entry):
         pass
 
-    def mark(self):
+    def mark(self, entry):
         pass
