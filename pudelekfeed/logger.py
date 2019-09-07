@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 
-log_level_dictionary = {"live": logging.INFO, "dev": logging.DEBUG}
+log_level_dictionary = {"LIVE": logging.INFO, "DEV": logging.DEBUG, "LOCAL": logging.DEBUG}
 
 environment = os.getenv('ENVIRONMENT')
 
