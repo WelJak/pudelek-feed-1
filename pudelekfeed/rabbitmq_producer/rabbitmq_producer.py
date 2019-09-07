@@ -4,7 +4,7 @@ import traceback
 
 import pika
 
-from pudelekfeed import logger
+import logger
 
 
 class RabbitmqProducer:

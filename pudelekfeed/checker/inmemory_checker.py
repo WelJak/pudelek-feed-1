@@ -1,4 +1,4 @@
-from pudelekfeed import logger
+import logger
 from .checker import Checker
 
 

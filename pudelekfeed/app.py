@@ -3,9 +3,9 @@ import os
 import time
 import uuid
 
-from pudelekfeed.checker.inmemory_checker import *
-from pudelekfeed.rabbitmq_producer.rabbitmq_producer import *
-from pudelekfeed.scrapper.scrapper import *
+from checker.inmemory_checker import *
+from rabbitmq_producer.rabbitmq_producer import *
+from scrapper.scrapper import *
 
 RABBIT_HOST = 'RABBIT_HOST'
 RABBIT_LOGIN = 'RABBIT_LOGIN'
