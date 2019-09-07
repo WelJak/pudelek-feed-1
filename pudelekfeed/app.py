@@ -16,7 +16,7 @@ RABBIT_ROUTING_KEY = 'RABBIT_ROUTING_KEY'
 CONFIG_FILE = "variables.ini"
 
 FEED_TYPE = 'PUDELEK'
-SLEEP_TIME_IN_SECONDS = 5
+SLEEP_TIME_IN_SECONDS = 'SLEEP_TIME_IN_SECONDS'
 WEBSITE_URL = 'https://www.pudelek.pl'
 
 
@@ -25,7 +25,7 @@ class App:
     def main(self):
         profile = os.getenv('ENVIRONMENT', "LOCAL")
         logger.info("Running pudelek feed with active profile: " + profile)
-        host, login, password, exchange, vhost, routing_key = self.read_config_file(profile)
+        host, login, password, exchange, vhost, routing_key, sleep_time_in_seconds = self.read_config_file(profile)
         try:
             scrapper = Scrapper(WEBSITE_URL)
             checker = InMemoryChecker()
@@ -38,7 +38,7 @@ class App:
                     response = producer.send_message(msg)
                     if response:
                         checker.mark(msg['message'])
-                time.sleep(SLEEP_TIME_IN_SECONDS)
+                time.sleep(sleep_time_in_seconds)
         except Exception as e:
             logger.info('An error occurred during process:')
             traceback.print_exc(file=sys.stdout)
@@ -59,7 +59,8 @@ class App:
         exchange = config[profile][RABBIT_EXCHANGE]
         vhost = config[profile][RABBIT_VHOST]
         routing_key = config[profile][RABBIT_ROUTING_KEY]
-        return host, login, password, exchange, vhost, routing_key
+        sleep_time_in_seconds = config[profile][SLEEP_TIME_IN_SECONDS]
+        return host, login, password, exchange, vhost, routing_key, sleep_time_in_seconds
 
 
 x = App()
