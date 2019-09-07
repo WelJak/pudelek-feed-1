@@ -42,6 +42,7 @@ class App:
         except Exception as e:
             logger.info('An error occurred during process:')
             traceback.print_exc(file=sys.stdout)
+            raise e
 
     @staticmethod
     def create_message(message):
