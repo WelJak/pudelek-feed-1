@@ -10,6 +10,16 @@ services:
     depends_on:
       - rabbitmq
 
+  sefeed:
+    build:
+      context: ./sefeed
+      dockerfile: build/sefeed/Dockerfile
+    environment:
+      ENVIRONMENT: DEV
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+
   rabbitmq:
     build:
       context: ./rabbitmq
