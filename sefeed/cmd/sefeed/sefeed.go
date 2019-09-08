@@ -3,16 +3,15 @@ package main
 import (
 	"../../internal/checker"
 	"../../internal/configloader"
+	"../../internal/logging"
 	"../../internal/rabbitmqproducer"
 	"../../internal/scraper"
-	"fmt"
 )
-
-const envConfigPath = "configs/"
 
 func main() {
 	environment := configloader.Getenv("ENVIRONMENT", "LOCAL")
-	fmt.Println("ENV: " + environment)
+	log := logging.InitLoggerFactory(environment).CreateLogger()
+	log.Info("Running sefeed with environment: ", environment)
 	config := configloader.Load(environment)
 	websiteScraper := scraper.New(configloader.WebsiteUrl)
 	newsChecker := checker.New()

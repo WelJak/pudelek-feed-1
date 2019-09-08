@@ -1,10 +1,12 @@
 package rabbitmqproducer
 
 import (
+	"../logging"
 	"../scraper"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
 
@@ -30,10 +32,12 @@ type RabbitmqProducer struct {
 	routingKey  string
 	connection  *amqp.Connection
 	channel     *amqp.Channel
+	log         *logrus.Logger
 }
 
 func New(login string, password string, host string, exchange string, virtualHost string, routingKey string) Producer {
 	url := buildAMPQUrl(login, password, host, virtualHost)
+	log := logging.CreateLogger()
 	connection, err := amqp.Dial(url)
 	if err != nil {
 		panic(err)
@@ -51,6 +55,7 @@ func New(login string, password string, host string, exchange string, virtualHos
 		routingKey:  routingKey,
 		connection:  connection,
 		channel:     channel,
+		log:         log,
 	}
 }
 
@@ -58,8 +63,10 @@ func (r RabbitmqProducer) SendMessage(news scraper.News) bool {
 	message := createFeedMessage(news)
 	body, err := json.Marshal(message)
 	if err != nil {
+		r.log.Error("Couldn't convert message to json: " + err.Error())
 		panic(err)
 	}
+	r.log.Info("Sending message: " + string(body))
 	response := r.channel.Publish(
 		r.exchange,
 		r.routingKey,
@@ -70,6 +77,7 @@ func (r RabbitmqProducer) SendMessage(news scraper.News) bool {
 			Body:        body,
 		})
 	if response != nil {
+		r.log.Error("Got exception when sending message to rabbitmq: " + response.Error())
 		panic(response)
 	}
 	return true
