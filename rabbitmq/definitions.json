@@ -37,6 +37,13 @@
       "durable": true,
       "auto_delete": false,
       "arguments": {}
+    },
+    {
+      "name": "se-feed",
+      "vhost": "PUDELEK",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
     }
   ],
   "exchanges": [
@@ -57,6 +64,14 @@
       "destination": "pudelek-feed",
       "destination_type": "queue",
       "routing_key": "PUDELEK",
+      "arguments": {}
+    },
+    {
+      "source": "feed-exchange",
+      "vhost": "PUDELEK",
+      "destination": "se-feed",
+      "destination_type": "queue",
+      "routing_key": "SE",
       "arguments": {}
     }
   ]
