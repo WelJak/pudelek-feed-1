@@ -2,18 +2,23 @@ package main
 
 import (
 	"../../internal/checker"
+	"../../internal/configloader"
 	"../../internal/rabbitmqproducer"
 	"../../internal/scraper"
+	"fmt"
 )
 
-const WebsiteUrl = "https://se.pl"
+const envConfigPath = "configs/"
 
 func main() {
-	websiteScraper := scraper.New(WebsiteUrl)
+	environment := configloader.Getenv("ENVIRONMENT", "LOCAL")
+	fmt.Println("ENV: " + environment)
+	config := configloader.Load(environment)
+	websiteScraper := scraper.New(configloader.WebsiteUrl)
 	newsChecker := checker.New()
-	messageProducer := rabbitmqproducer.New("admin", "admin", "localhost", "feed-exchange", "PUDELEK", "PUDELEK")
+	messageProducer := rabbitmqproducer.New(config.RabbitLogin, config.RabbitPassword, config.RabbitHost, config.RabbitExchange, config.RabbitVhost, config.RabbitRoutingKey)
 	news := websiteScraper.FetchNewsFromWebsite()
-	newsToSend := filter(news, func(n scraper.News) bool {
+	newsToSend := scraper.Filter(news, func(n scraper.News) bool {
 		return newsChecker.Check(n)
 	})
 	for _, n := range newsToSend {
@@ -22,14 +27,4 @@ func main() {
 			newsChecker.Mark(n)
 		}
 	}
-}
-
-func filter(vs []scraper.News, f func(scraper.News) bool) []scraper.News {
-	vsf := make([]scraper.News, 0)
-	for _, v := range vs {
-		if f(v) {
-			vsf = append(vsf, v)
-		}
-	}
-	return vsf
 }

@@ -33,3 +33,13 @@ func (SeScraper) FetchNewsFromWebsite() []News {
 		},
 	}
 }
+
+func Filter(vs []News, f func(News) bool) []News {
+	vsf := make([]News, 0)
+	for _, v := range vs {
+		if f(v) {
+			vsf = append(vsf, v)
+		}
+	}
+	return vsf
+}
