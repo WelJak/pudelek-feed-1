@@ -2,6 +2,8 @@ import configparser
 import os
 import time
 import uuid
+import sys
+import traceback
 
 from checker.inmemory_checker import *
 from rabbitmq_producer.rabbitmq_producer import *
