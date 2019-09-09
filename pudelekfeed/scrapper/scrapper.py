@@ -4,8 +4,6 @@ from urllib.request import urlopen as ureq
 
 from bs4 import BeautifulSoup as Soup
 
-import logger
-
 
 class Scrapper:
     def __init__(self, url):
@@ -20,24 +18,15 @@ class Scrapper:
             entries = page_soup.findAll("div", {"class": "entry"})
             output = list(map(lambda part: self.create_output_part(part), entries))
             return output
-        except:
+        except Exception as e:
             logger.info('An error occurred during establishing connection with {}'.format(self.url))
             traceback.print_exc(file=sys.stdout)
+            raise e
 
     @staticmethod
-    def create_date(time):
-        months = time.split('.')
-        year = months[2].split(' ')
-        hours_and_minutes = year[1].split(':')
-        date = months[:2] + hours_and_minutes[::]
-        date.insert(0, year[0])
-        date.append('0')
-        date = list(map(lambda x: int(x), date))
-        return str(datetime.datetime(date[0], date[2], date[1], date[3], date[4], date[5]))
-
-    def create_output_part(self, entry):
+    def create_output_part(entry):
         entry_id = entry["data-id"]
-        time = self.create_date(entry.span.text)
+        time = str(datetime.datetime.strptime(entry.span.text, '%d.%m.%Y %H:%M'))
         title = entry.a.text.strip()
         desc = entry.p.text
         a = entry.find("span", {"class": "inline-tags"})
