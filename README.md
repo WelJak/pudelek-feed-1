@@ -10,7 +10,7 @@ Aplikacja monitoruje stronę główną pudelka - za każdym razem kiedy pojawi s
 
 ### Architektura
 Ideowe przedstawienie rozwiązania
-![alt text](https://raw.githubusercontent.com/solveretur/pudelek-feed/master/architektura.jpg)
+![alt text](https://raw.githubusercontent.com/solveretur/pudelek-feed/master/docs/architektura.jpg)
 
 Architektura mikroserwisowa. Komunikacja odbywa się przy pomocy kolejki rabbitmq. Aplikacja składa się z 5 osobnych mikroseriwsów:
 * pudelek feed - serwis ściągający najnowsze wiadomości z pudelka 
