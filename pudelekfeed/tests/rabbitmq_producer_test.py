@@ -13,7 +13,7 @@ class RabbitmqProducerTest(unittest.TestCase):
                         'tags': ['Edyta Górniak', 'Big Brother'],
                         'link': 'https://www.pudelek.pl/artykul/150762/edyta_gorniak_zaspiewa_na_otwarciu_nowego_big_brothera_tez_nie_mozecie_sie_doczekac/'}
 
-    def test_send_message_should_return_True_if_message_has_been_sent_successfully(self):
+    def test_send_message_should_return_true_if_message_has_been_sent_successfully(self):
         self.assertTrue(self.producer.send_message(self.message))
 
 

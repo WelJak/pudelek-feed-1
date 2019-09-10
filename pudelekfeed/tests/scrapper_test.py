@@ -17,6 +17,9 @@ class ScrapperTest(unittest.TestCase):
     def test_fetch_news_from_website_should_return_list_of_news(self):
         self.assertIsInstance(self.news, list)
 
+    def test_create_date_should_return_standardized_date(self):
+        self.assertEqual(self.scrapper.create_date(self.date), '2019-09-21 12:30:00')
+
 
 if __name__ == '__main__':
     unittest.main()
