@@ -26,7 +26,10 @@ class RabbitmqProducer:
             body = json.dumps(message, ensure_ascii=False)
             self.channel.basic_publish(exchange=self.exchange,
                                        routing_key=self.routing_key,
-                                       body=body)
+                                       body=body,
+                                       properties=pika.BasicProperties(
+                                           content_type='application/json'
+                                       ))
             logger.info('Message: {} has been sent'.format(message))
             return True
         except:
@@ -34,6 +37,7 @@ class RabbitmqProducer:
             traceback.print_exc(file=sys.stdout)
             self.restart_connection()
             return False
+
 
     def restart_connection(self):
         if not self.connection.is_closed:
