@@ -39,10 +39,9 @@ class RabbitmqProducer:
             return False
 
         def restart_connection(self):
-        self.connection.close()
         if not self.connection.is_closed:
             self.connection.close()
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.credentials,
                                       virtual_host=self.virtual_host))
-        self.channel = self.connection.channel())
+        self.channel = self.connection.channel()
