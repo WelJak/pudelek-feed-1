@@ -38,7 +38,6 @@ class RabbitmqProducer:
             self.restart_connection()
             return False
 
-
     def restart_connection(self):
         if not self.connection.is_closed:
             self.connection.close()
