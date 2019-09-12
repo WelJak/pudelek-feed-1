@@ -1,5 +1,7 @@
 import sys
 import traceback
+import logger
+import datetime
 from urllib.request import urlopen as ureq
 
 from bs4 import BeautifulSoup as Soup
@@ -24,7 +26,7 @@ class Scrapper:
 
     def create_output_part(self, entry):
         entry_id = entry["data-id"]
-        time = self.create_date(entry.span.text))
+        time = self.create_date(entry.span.text)
         title = entry.a.text.strip()
         desc = entry.p.text
         a = entry.find("span", {"class": "inline-tags"})
