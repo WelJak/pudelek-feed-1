@@ -1,10 +1,10 @@
-from unittest import mock
+import json
+import sys
+import traceback
 
 import pika
 
 import logger
-
-mock = mock.Mock()
 
 
 class RabbitmqListener:
@@ -20,30 +20,26 @@ class RabbitmqListener:
             pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.credentials,
                                       virtual_host=self.virtual_host))
         self.channel = self.connection.channel()
-
-    logger.info('Waiting for messages from pudelek-feed')
+        logger.info('Waiting for messages from pudelek-feed queue')
 
     def listen(self, function):
-        def on_message_callback(ch, method, properties, body):
-            function(body)
+        try:
+            def on_message_callback(ch, method, properties, body):
+                function(json.loads(body))
 
-        self.channel.basic_consume(queue=self.queue_name,
-                                   on_message_callback=on_message_callback,
-                                   auto_ack=True)
-        self.channel.start_consuming()
+            self.channel.basic_consume(queue=self.queue_name,
+                                       on_message_callback=on_message_callback,
+                                       auto_ack=True)
+            self.channel.start_consuming()
+        except Exception as e:
+            logger.info('An error occurred during process:')
+            traceback.print_exc(file=sys.stdout)
+            raise e
 
-
-class App:
-    def logic(self, message):
-        self.wykopInterface = mock
-        self.wykopInterface.send_news_to_wykop(message)
-        self.wykopInterface.send_news_to_wykop.return_value = logger.info(
-            'Message has been successfully sent to wykop.pl')
-
-    def main(self):
-        rabbitListener = RabbitmqListener('admin', 'admin', 'localhost', 'feed-exchange', 'PUDELEK', 'pudelek-feed')
-        rabbitListener.listen(self.logic)
-
-
-x = App()
-x.main()
+    def restart_connection(self):
+        if not self.connection.is_closed():
+            self.connection.close()
+        self.connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.credentials,
+                                      virtual_host=self.virtual_host))
+        self.channel = self.connection.channel()
