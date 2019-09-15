@@ -7,39 +7,37 @@ import pika
 import logger
 
 
-class RabbitmqProducer:
+class RabbitmqListener:
 
-    def __init__(self, login, password, host, exchange, virtual_host, routing_key):
+    def __init__(self, login, password, host, exchange, virtual_host, queue_name):
         self.credentials = pika.PlainCredentials(login, password)
         self.host = host
         self.exchange = exchange
         self.port = 5672
         self.virtual_host = virtual_host
-        self.routing_key = routing_key
+        self.queue_name = queue_name
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.credentials,
                                       virtual_host=self.virtual_host))
         self.channel = self.connection.channel()
+        logger.info('Waiting for messages from pudelek-feed queue')
 
-    def send_message(self, message):
+    def listen(self, function):
         try:
-            body = json.dumps(message, ensure_ascii=False)
-            self.channel.basic_publish(exchange=self.exchange,
-                                       routing_key=self.routing_key,
-                                       body=body,
-                                       properties=pika.BasicProperties(
-                                           content_type='application/json'
-                                       ))
-            logger.info('Message: {} has been sent'.format(message))
-            return True
-        except:
-            logger.info('An error occurred during sending message {}'.format(message))
+            def on_message_callback(ch, method, properties, body):
+                function(json.loads(body))
+
+            self.channel.basic_consume(queue=self.queue_name,
+                                       on_message_callback=on_message_callback,
+                                       auto_ack=True)
+            self.channel.start_consuming()
+        except Exception as e:
+            logger.info('An error occurred during process:')
             traceback.print_exc(file=sys.stdout)
-            self.restart_connection()
-            return False
+            raise e
 
     def restart_connection(self):
-        if not self.connection.is_closed:
+        if not self.connection.is_closed():
             self.connection.close()
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.credentials,
