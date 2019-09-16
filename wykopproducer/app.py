@@ -1,4 +1,6 @@
 import configparser
+# import requests
+import hashlib
 import os
 from unittest import mock
 
@@ -12,32 +14,39 @@ RABBIT_VHOST = 'RABBIT_VHOST'
 RABBIT_QUEUE = 'RABBIT_QUEUE'
 CONFIG_FILE = "variables.ini"
 
-FEED_TYPE = 'PUDELEK'
-WEBSITE_URL = 'https://www.pudelek.pl'
 DEFAULT_PROFILE = "LOCAL"
 
 mock = mock.Mock()
+WYKOP_APP_KEY = '123'
+WYKOP_SECRET_KEY = '321'
+WYKOP_ADD_ENTRY_URL = 'https://a2.wykop.pl/Entries/Entry/entry/'
 
 
 class App:
-    def logic(self, message):
-        self.wykopInterface = mock
+    def client(self, message):
+        self.requests = mock
         try:
-            # tu jakas logika ktora rozbije ten dict na odpowiednie czesci a potem powsadza w odpowiednie funkcje przy uzyciu api - to popatrzec dokumentacje musze
-            self.wykopInterface.send_news_to_wykop(message)
-            self.wykopInterface.send_news_to_wykop.return_value = logger.info(
-                'Message {} has been successfully sent to wykop.pl'.format(message))
+            headers = {
+                'apisign': self.create_md5checksum(WYKOP_SECRET_KEY, WYKOP_ADD_ENTRY_URL + 'appkey/' + WYKOP_APP_KEY),
+                'Content-type': 'application/x-www-form-urlencoded'}
+            post_params = {'body': message, 'embed': '', 'adultmedia': False}
+            wykop_client = self.requests.post(WYKOP_ADD_ENTRY_URL + 'appkey/' + WYKOP_APP_KEY, data=post_params,
+                                              headers=headers)
+            if wykop_client.status_code == 200:
+                logger.info('Added new entry on wykop.pl')
+            elif wykop_client.status_code == 404:
+                logger.info('Response code 404 - posting new entry was unsuccessful')
         except:
             logger.info('An error occurred during sending message to wykop.pl')
             traceback.print_exc(file=sys.stdout)
 
     def main(self):
         profile = os.getenv('ENVIRONMENT', DEFAULT_PROFILE)
-        logger.info("Running pudelek feed with active profile: " + profile)
+        logger.info("Running wykop client with active profile: " + profile)
         host, login, password, exchange, vhost, queue = self.read_config_file(profile)
         try:
             rabbitListener = RabbitmqListener(login, password, host, exchange, vhost, queue)
-            rabbitListener.listen(self.logic)
+            rabbitListener.listen(self.client)
         except Exception as e:
             logger.info('An error occurred during process:')
             traceback.print_exc(file=sys.stdout)
@@ -56,6 +65,11 @@ class App:
         vhost = config[profile][RABBIT_VHOST]
         queue = config[profile][RABBIT_QUEUE]
         return host, login, password, exchange, vhost, queue
+
+    @staticmethod
+    def create_md5checksum(secret, url, post_params=''):
+        value_to_count = secret + url + post_params
+        return hashlib.md5(value_to_count.encode('utf-8')).hexdigest()
 
 
 x = App()
