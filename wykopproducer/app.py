@@ -31,7 +31,8 @@ class App:
         json = mock
         try:
             link_draft_headers = {
-                'apisign': self.create_md5checksum(WYKOP_SECRET_KEY, WYKOP_LINK_DRAFT_URL+'appkey/'+WYKOP_APP_KEY+'/userkey/'+WYKOP_USER_KEY),
+                'apisign': self.create_md5checksum(WYKOP_SECRET_KEY,
+                                                   WYKOP_LINK_DRAFT_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY),
                 'Content-type': 'application/x-www-form-urlencoded'
             }
             link_draft_post_params = {'url': message['message']['link']}
@@ -63,7 +64,9 @@ class App:
                 'apisign': self.create_md5checksum(WYKOP_SECRET_KEY,
                                                    WYKOP_ADD_ENTRY_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY),
                 'Content-type': 'application/x-www-form-urlencoded'}
-            addentry_post_params = {'body': 'Patrzcie co znalazlem '+ wykop_addlink_respone['data']['compact']['full']['url'], 'embed': '', 'adultmedia': False}
+            addentry_post_params = {
+                'body': 'Patrzcie co znalazlem ' + wykop_addlink_respone['data']['compact']['full']['url'], 'embed': '',
+                'adultmedia': False}
             wykop_entry_client = self.requests.post(
                 WYKOP_ADD_ENTRY_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY,
                 data=addentry_post_params,
