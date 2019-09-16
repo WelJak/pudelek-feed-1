@@ -30,12 +30,16 @@ class App:
         self.requests = mock
         json = mock
         try:
+            link_draft_post_params = {'url': message['message']['link']}
             link_draft_headers = {
                 'apisign': self.create_md5checksum(WYKOP_SECRET_KEY,
-                                                   WYKOP_LINK_DRAFT_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY),
+                                                   WYKOP_LINK_DRAFT_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY,
+                                                   post_params=','.join(
+                                                       '{}'.format(link_draft_post_params[key]) for key in
+                                                       link_draft_post_params)),
                 'Content-type': 'application/x-www-form-urlencoded'
             }
-            link_draft_post_params = {'url': message['message']['link']}
+
             wykop_link_draft_client = self.requests.post(
                 WYKOP_SECRET_KEY, WYKOP_LINK_DRAFT_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY,
                 data=link_draft_post_params,
@@ -44,29 +48,36 @@ class App:
             draft_response = json.loads(wykop_link_draft_client.json())
 
             key = ''  # patrz dokumentacja
-            addlink_headers = {
-                'apisign': self.create_md5checksum(WYKOP_SECRET_KEY,
-                                                   WYKOP_ADD_LINK_URL + 'key/' + key + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY),
-                'Content-type': 'application/x-www-form-urlencoded'
-            }
             addlink_post_params = {'title': message['message']['title'],
                                    'descritpion': message['message']['description'],
-                                   'tags': ', '.join(['message']['tags']),
+                                   'tags': ', '.join(message['message']['tags']),
                                    'photo': draft_response['data']['compact']['photos']['key'],
                                    'url': message['message']['link'],
                                    'plus18': True}
+            addlink_headers = {
+                'apisign': self.create_md5checksum(WYKOP_SECRET_KEY,
+                                                   WYKOP_ADD_LINK_URL + 'key/' + key + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY,
+                                                   post_params=','.join('{}'.format(addlink_post_params[key]) for key in
+                                                                        addlink_post_params)),
+                'Content-type': 'application/x-www-form-urlencoded'
+            }
             wykop_addlink_client = self.requests.post(
                 WYKOP_ADD_LINK_URL + 'key/' + key + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY,
                 data=addlink_post_params, headers=addlink_headers)
             wykop_addlink_respone = json.loads(wykop_addlink_client.json())
 
-            addentry_headers = {
-                'apisign': self.create_md5checksum(WYKOP_SECRET_KEY,
-                                                   WYKOP_ADD_ENTRY_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY),
-                'Content-type': 'application/x-www-form-urlencoded'}
             addentry_post_params = {
                 'body': 'Patrzcie co znalazlem ' + wykop_addlink_respone['data']['compact']['full']['url'], 'embed': '',
-                'adultmedia': False}
+                'adultmedia': False
+            }
+            addentry_headers = {
+                'apisign': self.create_md5checksum(WYKOP_SECRET_KEY,
+                                                   WYKOP_ADD_ENTRY_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY,
+                                                   post_params=','.join(
+                                                       '{}'.format(addentry_post_params[key]) for key in
+                                                       addentry_post_params)),
+                'Content-type': 'application/x-www-form-urlencoded'
+            }
             wykop_entry_client = self.requests.post(
                 WYKOP_ADD_ENTRY_URL + 'appkey/' + WYKOP_APP_KEY + '/userkey/' + WYKOP_USER_KEY,
                 data=addentry_post_params,
