@@ -1,9 +1,10 @@
 import configparser
 import os
 
-from wykopproducer.rabbitmq_listener.rabbitmq_listener import *
-from wykopproducer.wykop_client_mock.wykop_client_mock import *
 from wykopproducer.checker.checker import *
+from wykopproducer.rabbitmq_listener.rabbitmq_listener import *
+from wykopproducer.wykop_client.wykop_client import *
+
 RABBIT_HOST = 'RABBIT_HOST'
 RABBIT_LOGIN = 'RABBIT_LOGIN'
 RABBIT_PASSWORD = 'RABBIT_PASSWORD'
@@ -24,7 +25,7 @@ class App:
         self.api = WykopClientMock(WYKOP_APP_KEY, WYKOP_SECRET_KEY, WYKOP_USER_KEY)
         self.checker = Checker()
 
-    def client(self, message):
+    def publish_news(self, message):
         if self.checker.check(message['message']):
             message_to_send = message['message']
         draft_link_response = self.api.prepare_link_draft(message_to_send)
@@ -40,7 +41,7 @@ class App:
         host, login, password, exchange, vhost, queue = self.read_config_file(profile)
         try:
             rabbitListener = RabbitmqListener(login, password, host, exchange, vhost, queue)
-            rabbitListener.listen(self.client)
+            rabbitListener.listen(self.publish_news)
         except Exception as e:
             logger.info('An error occurred during process:')
             traceback.print_exc(file=sys.stdout)

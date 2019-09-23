@@ -1,7 +1,5 @@
 import hashlib
 import json
-import sys
-import traceback
 
 import logger
 
@@ -21,9 +19,7 @@ class WykopClient:
         link_draft_headers = {
             'apisign': self.create_md5checksum(self.WYKOP_SECRET_KEY,
                                                WYKOP_LINK_DRAFT_URL + 'appkey/' + self.WYKOP_APP_KEY + '/userkey/' + self.WYKOP_USER_KEY,
-                                               post_params=','.join(
-                                                   '{}'.format(link_draft_post_params[key]) for key in
-                                                   link_draft_post_params)),
+                                               post_params=link_draft_post_params['url']),
             'Content-type': 'application/x-www-form-urlencoded'
         }
         wykop_link_draft_client = self.requests.post(
@@ -33,6 +29,7 @@ class WykopClient:
             headers=link_draft_headers
         )
         return json.loads(wykop_link_draft_client.json())
+
     def add_link(self, message, draft_response):
         key = ''  # patrz dokumentacja
         addlink_post_params = {'title': message['message']['title'],
@@ -52,6 +49,7 @@ class WykopClient:
             WYKOP_ADD_LINK_URL + 'key/' + key + 'appkey/' + self.WYKOP_APP_KEY + '/userkey/' + self.WYKOP_USER_KEY,
             data=addlink_post_params, headers=addlink_headers)
         return json.loads(wykop_addlink_client.json())
+
     def add_entry(self, addlink_response):
         addentry_post_params = {
             'body': 'Patrzcie co znalazlem ' + addlink_response['data']['compact']['full']['url'],
@@ -75,8 +73,21 @@ class WykopClient:
         else:
             return False, logger.info('Message has not been sent to wykop.pl')
 
-
     @staticmethod
     def create_md5checksum(secret, url, post_params=''):
         value_to_count = secret + url + post_params
         return hashlib.md5(value_to_count.encode('utf-8')).hexdigest()
+
+
+class WykopClientMock:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def prepare_link_draft(self, *args, **kwargs):
+        return {'data': {'compact': {'photos': {'key': 'photokey'}}}}
+
+    def add_link(self, *args, **kwargs):
+        return {'data': {'compact': {'full': {'url': 'www.url.url'}}}}
+
+    def add_entry(self, *args, **kwargs):
+        return True
