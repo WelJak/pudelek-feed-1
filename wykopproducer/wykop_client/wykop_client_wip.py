@@ -6,6 +6,7 @@ WYKOP_ADD_ENTRY_URL = 'https://a2.wykop.pl/Entries/Add/'
 WYKOP_ADD_LINK_URL = 'https://a2.wykop.pl/Addlink/Add/'
 WYKOP_LINK_DRAFT_URL = 'https://a2.wykop.pl/Addlink/Draft/'
 WYKOP_LOG_IN_URL = 'https://a2.wykop.pl/Login/Index/'
+WYKOP_PREPARE_THUMBNAIL_URL = 'https://a2.wykop.pl/Addlink/Images/'
 
 
 class WykopClient:
@@ -30,11 +31,43 @@ class WykopClient:
             headers=log_in_headers)
         return response.json()['data']['userkey']
 
-    def prepare_link_draft(self):
-        pass
+    def prepare_link_for_posting(self, url, userkey):
+        prepare_link_post_params = {'url': url}
+        prepare_link_headers = {'apisign': self.create_md5checksum(self.WYKOP_SECRET_KEY,
+                                                                   WYKOP_LINK_DRAFT_URL + 'appkey/' + self.WYKOP_APP_KEY + '/userkey/' + userkey,
+                                                                   prepare_link_post_params['url'])}
+        response = requests.post(
+            WYKOP_LINK_DRAFT_URL + 'appkey/' + self.WYKOP_APP_KEY + '/userkey/' + self.WYKOP_USER_KEY,
+            data=prepare_link_post_params,
+            headers=prepare_link_headers)
+        return response.json()
 
-    def add_link(self):
-        pass
+    def prepare_news_thumbnail(self, prepare_link_response, userkey):
+        prepare_thumbnail_nameparam = prepare_link_response['data']['key']
+        prepare_thumbnail_headers = {'apisign': self.create_md5checksum(self.WYKOP_SECRET_KEY,
+                                                                        WYKOP_PREPARE_THUMBNAIL_URL + 'key/' + prepare_thumbnail_nameparam + '/appkey/' + self.WYKOP_APP_KEY + '/userkey/' + userkey)}
+        response = requests.post(
+            WYKOP_PREPARE_THUMBNAIL_URL + 'key/' + prepare_thumbnail_nameparam + '/appkey/' + self.WYKOP_APP_KEY + '/userkey/' + self.WYKOP_USER_KEY,
+            headers=prepare_thumbnail_headers)
+        return response.json()
+
+    def add_link_on_wykop(self, prepare_link_response, prepare_thumbnail_response, message, userkey):
+        add_link_nameparam = prepare_link_response['data']['key']
+        add_link_postparams = {'title': prepare_link_response['data']['title'],
+                               'description': message['message']['description'],
+                               'tags': ','.join(message['message']['tags']).replace(' ', ''),
+                               'photo': prepare_thumbnail_response['data'][0]['key'],
+                               'url': message['message']['link']}
+        add_link_headers = {'apisign': self.create_md5checksum(self.WYKOP_SECRET_KEY,
+                                                               WYKOP_ADD_LINK_URL + 'key/' + add_link_nameparam + '/appkey/' + self.WYKOP_APP_KEY + '/userkey/' + userkey,
+                                                               post_params=','.join(
+                                                                   '{}'.format(add_link_postparams[key]) for key in
+                                                                   add_link_postparams))}
+        response = requests.post(
+            WYKOP_ADD_LINK_URL + 'key/' + add_link_nameparam + '/appkey/' + self.WYKOP_APP_KEY + '/userkey/' + userkey,
+            data=add_link_postparams,
+            headers=add_link_headers)
+        return response.json()
 
     def add_entry(self, userkey):
         add_entry_postparams = {'body': 'test123 api wykop',
