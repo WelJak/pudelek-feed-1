@@ -10,6 +10,13 @@ services:
     depends_on:
       - rabbitmq
 
+  wykopproducer:
+    build:
+      context: ./wykopproducer
+    environment:
+      ENVIRONMENT: DEV
+    restart: on-failure
+
   rabbitmq:
     build:
       context: ./rabbitmq
