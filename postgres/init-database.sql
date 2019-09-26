@@ -1,8 +1,8 @@
 --SCRIPT WHICH INITIALISE pudelekfeed DATABASE
-CREATE TABLE entries (
-    uuid varchar PRIMARY KEY ,
+CREATE TABLE news (
+    uuid varchar PRIMARY KEY UNIQUE NOT NULL ,
     type varchar NOT NULL ,
-    entry_id varchar NOT NULL ,
+    entry_id varchar NOT NULL UNIQUE ,
     add_date varchar NOT NULL ,
     title varchar NOT NULL ,
     description varchar NOT NULL ,
