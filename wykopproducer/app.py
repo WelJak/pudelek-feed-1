@@ -33,20 +33,19 @@ class App:
     def publish_news(self, message):
         if self.checker.check(message['message']):
             message_to_send = message
-        prepare_link_response = self.api.prepare_link_for_posting(message_to_send, self.userkey)
+        prepare_link_response = self.api.prepare_link_for_posting(message_to_send)
         if 'error' in prepare_link_response:
             logger.info('An error occured during preparing message: {}'.format(prepare_link_response['error']))
             self.checker.mark(message_to_send['message'])
         else:
-            prepare_thumbnail_response = self.api.prepare_news_thumbnail(prepare_link_response, self.userkey)
+            prepare_thumbnail_response = self.api.prepare_news_thumbnail(prepare_link_response)
             add_link_response = self.api.add_link_on_wykop(prepare_link_response,
                                                            prepare_thumbnail_response,
-                                                           message_to_send,
-                                                           self.userkey)
+                                                           message_to_send)
             if 'error' in add_link_response:
                 logger.info('An error ocured during posting message on wykop: {}'.format(add_link_response['error']))
             else:
-                add_entry_response = self.api.add_entry(add_link_response, self.userkey)
+                add_entry_response = self.api.add_entry(add_link_response)
                 if add_entry_response:
                     logger.info('message {} has been successfully sent to wykop.pl'.format(message_to_send['message']))
                     self.checker.mark(message_to_send['message'])
@@ -57,10 +56,10 @@ class App:
         host, login, password, exchange, vhost, queue, appkey, secret, wykoplogin, acckey = self.read_config_file(profile)
         if profile == 'LOCAL':
             self.api = WykopClientMock(appkey, secret, wykoplogin, acckey)
-            self.userkey = self.api.log_in()
+            self.api.WYKOP_USER_KEY = self.api.log_in()
         else:
             self.api = WykopClient(appkey, secret, wykoplogin, acckey)
-            self.userkey = self.api.log_in()
+            self.api.WYKOP_USER_KEY = self.api.log_in()
         try:
             rabbitListener = RabbitmqListener(login, password, host, exchange, vhost, queue)
             rabbitListener.listen(self.publish_news)
