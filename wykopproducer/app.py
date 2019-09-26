@@ -19,15 +19,10 @@ WYKOP_ACCOUNT_KEY = 'WYKOP_ACCOUNT_KEY'
 
 DEFAULT_PROFILE = "LOCAL"
 
-#WYKOP_APP_KEY = '123'
-#WYKOP_SECRET_KEY = '321'
-#WYKOP_LOGIN = 'maasdasd'
-#WYKOP_ACCOUNT_KEY = 'abcd'
-
 
 class App:
     def __init__(self):
-        self.api = ''
+        self.api = None
         self.checker = Checker()
 
     def publish_news(self, message):
@@ -55,6 +50,9 @@ class App:
         logger.info("Running wykop client with active profile: " + profile)
         host, login, password, exchange, vhost, queue, appkey, secret, wykoplogin, acckey = self.read_config_file(profile)
         if profile == 'LOCAL':
+            self.api = WykopClientMock(appkey, secret, wykoplogin, acckey)
+            self.api.WYKOP_USER_KEY = self.api.log_in()
+        elif profile == 'DEV':
             self.api = WykopClientMock(appkey, secret, wykoplogin, acckey)
             self.api.WYKOP_USER_KEY = self.api.log_in()
         else:
