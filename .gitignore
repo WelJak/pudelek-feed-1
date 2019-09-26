@@ -106,3 +106,7 @@ venv.bak/
 build
 .gradle
 auth.conf
+/wykopproducer/wykop_client/client.py
+/wykopproducer/wykop_client/test2.py
+/wykopproducer/wykop_client/testeffect.py
+/wykopproducer/wykop_client/wykop_client_wip.py
