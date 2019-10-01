@@ -33,7 +33,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>
+            <groupId>org.postgresql</groupId>@Data
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
