@@ -7,8 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MockCheckerService implements CheckerService {
+    private List entries = new ArrayList();
     @Override
-    public boolean checkifmessagewassent(CheckerRequest checkerRequest, List entries) {
+    public boolean checkifmessagewassent(CheckerRequest checkerRequest) {
         checkerRequest.getmessage();
         checkerRequest.create_output_part();
         if (entries.contains(Arrays.toString(checkerRequest.getEntry()))){

@@ -7,18 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @RestController
 public class CheckerController {
     CheckerService checkerService = new MockCheckerService();
-    private List entries = new ArrayList();
 
     @PostMapping("/check")
     public ResponseEntity<CheckerResponse> checkMessage(CheckerRequest checkerRequest) {
-        System.out.println(entries);
-        return new ResponseEntity(checkerService.checkifmessagewassent(checkerRequest,entries), HttpStatus.OK);
+        return new ResponseEntity(checkerService.checkifmessagewassent(checkerRequest), HttpStatus.OK);
     }
 }
