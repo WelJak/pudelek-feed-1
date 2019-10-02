@@ -4,7 +4,7 @@ import lombok.Value;
 
 @Value
 public class CheckerResponse {
-    private String id;
-    private String message;
+
+    private boolean issent;
 
 }

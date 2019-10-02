@@ -12,7 +12,7 @@ public class CheckerRequest {
     private String description;
     private String[] tags;
     private String link;
-    private String[] array;
+    private String[] entry;
 
     public void getmessage() {
         this.setId("message id");
@@ -23,8 +23,8 @@ public class CheckerRequest {
         this.setLink("message link");
     }
 
-    public void createArray(){
-        this.array = new String[]{this.id, this.date, this.title, this.description, Arrays.toString(this.tags), this.link};
+    public void create_output_part(){
+        this.entry = new String[]{this.id, this.date, this.title, this.description, Arrays.toString(this.tags), this.link};
     }
 
 }
