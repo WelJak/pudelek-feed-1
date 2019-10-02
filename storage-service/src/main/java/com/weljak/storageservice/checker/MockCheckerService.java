@@ -1,15 +1,19 @@
 package com.weljak.storageservice.checker;
 
 import com.weljak.storageservice.webapi.CheckerRequest;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class MockCheckerService implements CheckerService {
-    private List entries = new ArrayList();
+    public List<String> entries = new ArrayList<>();
+
 
     @Override
-    public boolean checkifmessagewassent(CheckerRequest checkerRequest) {
+    public boolean checkIfMessageWasSent(CheckerRequest checkerRequest) {
         if (entries.contains(checkerRequest.getId())) {
             System.out.println("message was already sent");
             System.out.println(entries);
