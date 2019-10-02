@@ -10,15 +10,14 @@ public class MockCheckerService implements CheckerService {
     private List entries = new ArrayList();
     @Override
     public boolean checkifmessagewassent(CheckerRequest checkerRequest) {
-        checkerRequest.getmessage();
-        checkerRequest.create_output_part();
-        if (entries.contains(Arrays.toString(checkerRequest.getEntry()))){
+        if (entries.contains(checkerRequest)){
             System.out.println("message was already sent");
-            System.out.println(Arrays.toString(checkerRequest.getEntry()));
+            System.out.println(checkerRequest);
             return true;
         }else{
             System.out.println("message has not been sent yet");
-            entries.add(Arrays.toString(checkerRequest.getEntry()));
+            entries.add(checkerRequest);
+            System.out.println(entries);
             return false;
         }
 
