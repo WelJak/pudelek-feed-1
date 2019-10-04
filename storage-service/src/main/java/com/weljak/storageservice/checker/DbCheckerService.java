@@ -1,72 +1,66 @@
 package com.weljak.storageservice.checker;
 
-import com.weljak.storageservice.message.News;
-import com.weljak.storageservice.message.Tags;
-import com.weljak.storageservice.message.newsrepo.NewsRepo;
-import com.weljak.storageservice.message.newsrepo.TagsRepo;
+import com.weljak.storageservice.news.News;
+import com.weljak.storageservice.news.NewsRepo;
+import com.weljak.storageservice.news.Tags;
 import com.weljak.storageservice.webapi.CheckerRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DbCheckerService implements CheckerService {
     private final NewsRepo newsRepo;
-    private final TagsRepo tagsRepo;
 
     @Override
     public boolean checkIfMessageWasSent(CheckerRequest checkerRequest) {
-        if (newsRepo.existsByEntryid(checkerRequest.getEntryid())) {
-            return false;
-        } else {
+        if (checkerRequest == null) {
             return true;
         }
-
-    }
-
-    public Tags convertToTag(String tag) {
-        Tags tags = new Tags();
-        tags.setTag(tag);
-        return tags;
-    }
-
-    public List<Tags> convertToTagList(List<String> list) {
-        List<Tags> x = new ArrayList<Tags>();
-        for (int i = 0; i < list.size(); i++) {
-            x.add(convertToTag(list.get(i)));
+        final boolean newsExists = newsRepo.existsByEntryid(checkerRequest.getEntryid());
+        if (!newsExists) {
+            final News news = toNews(checkerRequest);
+            newsRepo.save(news);
         }
-        return x;
+        return newsExists;
     }
 
-    public News convertToUuid(String uuid) {
-        News news = new News();
-        news.setUuid(uuid);
-        return news;
+    private Tags convertToTag(String tag) {
+        if (tag != null) {
+            return Tags.builder().tag(tag).build();
+        }
+        return null;
+    }
+
+    private List<Tags> convertToTagList(List<String> list) {
+        if (list != null) {
+            return list.stream().map(this::convertToTag).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
+    }
+
+    private News toNews(CheckerRequest checkerRequest) {
+        return News.builder()
+                .uuid(checkerRequest.getUuid())
+                .type(checkerRequest.getType())
+                .entryid(checkerRequest.getEntryid())
+                .post_date(checkerRequest.getPost_date())
+                .title(checkerRequest.getTitle())
+                .description(checkerRequest.getDescription())
+                .tag(convertToTagList(checkerRequest.getTags()))
+                .link(checkerRequest.getLink())
+                .build();
     }
 
     @Override
     public boolean sendMessage(CheckerRequest checkerRequest) {
         try {
-            News news = new News();
-            news.setEntryid(checkerRequest.getEntryid());
-            news.setDescription(checkerRequest.getDescription());
-            news.setLink(checkerRequest.getLink());
-            news.setPost_date(checkerRequest.getPost_date());
-            news.setUuid(checkerRequest.getUuid());
-            news.setType(checkerRequest.getType());
-            news.setTitle(checkerRequest.getTitle());
-            news.setTag(convertToTagList(checkerRequest.getTags()));
+            final News news = toNews(checkerRequest);
             newsRepo.save(news);
-            /*for (int a = 0; a < checkerRequest.getTags().size(); a++) {
-                Tags tags = new Tags();
-                tags.setTag(checkerRequest.getTags().get(a));
-                tags.setUuid(convertToUuid(checkerRequest.getUuid()));
-                tagsRepo.save(tags);
-            }*/
-
             return true;
         } catch (Exception e) {
             System.out.println("something went wrong");

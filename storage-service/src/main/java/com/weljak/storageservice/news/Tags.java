@@ -1,16 +1,19 @@
-package com.weljak.storageservice.message;
+package com.weljak.storageservice.news;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "tags")
 public class Tags {
 
     @Id
@@ -20,10 +23,6 @@ public class Tags {
     @Column(name = "tag", nullable = false)
     private String tag;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    //@OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "uuid", nullable = false)
-    private News uuid;
-
-
+    @Column(name = "uuid")
+    private String uuid;
 }
