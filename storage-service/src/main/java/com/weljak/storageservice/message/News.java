@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -34,8 +36,8 @@ public class News {
     private String description;
 
     @OneToMany(mappedBy = "uuid")
-    private Set<Tags> tags;
+    private List<Tags> tag;
 
-    @Column(name ="link", nullable = false)
+    @Column(name = "link", nullable = false)
     private String link;
 }

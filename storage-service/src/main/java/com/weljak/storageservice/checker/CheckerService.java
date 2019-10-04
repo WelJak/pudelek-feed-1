@@ -4,4 +4,6 @@ import com.weljak.storageservice.webapi.CheckerRequest;
 
 public interface CheckerService {
     public boolean checkIfMessageWasSent(CheckerRequest checkerRequest);
+
+    public boolean sendMessage(CheckerRequest checkerRequest);
 }

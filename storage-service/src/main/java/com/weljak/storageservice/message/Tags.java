@@ -24,9 +24,8 @@ public class Tags {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name="uuid", nullable = false)
+    @JoinColumn(name = "uuid", nullable = false)
     private News uuid;
-
 
 
 }
