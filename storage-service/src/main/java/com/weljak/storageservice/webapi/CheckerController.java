@@ -15,14 +15,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class CheckerController {
-    private final NewsRepo newsRepo;
+    private final CheckerService checkerService;
 
     @PostMapping("/check")
     public ResponseEntity<CheckerResponse> checkMessage(@RequestBody CheckerRequest checkerRequest) {
-        return new ResponseEntity(newsRepo.existsByEntryid(checkerRequest.getEntryid()), HttpStatus.OK);
+        return new ResponseEntity(checkerService.checkIfMessageWasSent(checkerRequest), HttpStatus.OK);
     }
     /*@PostMapping("/add")  // NIE DZIAŁA
     public ResponseEntity<CheckerResponse> sendMessage(@RequestBody CheckerRequest checkerRequest) {
-        return new ResponseEntity(newsRepo.save(checkerRequest), HttpStatus.OK);
+        return new ResponseEntity(News.save(checkerRequest), HttpStatus.OK);
     }*/
 }
