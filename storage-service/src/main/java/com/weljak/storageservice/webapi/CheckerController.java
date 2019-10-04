@@ -15,11 +15,13 @@ public class CheckerController {
 
     @PostMapping("/check")
     public ResponseEntity<CheckerResponse> checkMessage(@RequestBody CheckerRequest checkerRequest) {
-        return new ResponseEntity(checkerService.checkIfMessageWasSent(checkerRequest), HttpStatus.OK);
+        if (checkerService.checkIfMessageWasSent(checkerRequest) == true) {
+            return new ResponseEntity(checkerService.sendMessage(checkerRequest), HttpStatus.OK);
+        } else {
+            System.out.println("juz wyslano");
+            return new ResponseEntity(checkerService.checkIfMessageWasSent(checkerRequest), HttpStatus.OK);
+        }
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<CheckerResponse> sendMessage(@RequestBody CheckerRequest checkerRequest) {
-        return new ResponseEntity(checkerService.sendMessage(checkerRequest), HttpStatus.OK);
-    }
+
 }
