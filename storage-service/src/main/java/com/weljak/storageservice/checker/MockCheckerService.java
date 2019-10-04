@@ -14,13 +14,13 @@ public class MockCheckerService implements CheckerService {
 
     @Override
     public boolean checkIfMessageWasSent(CheckerRequest checkerRequest) {
-        if (entries.contains(checkerRequest.getId())) {
+        if (entries.contains(checkerRequest.getEntryid())) {
             System.out.println("message was already sent");
             System.out.println(entries);
             return true;
         } else {
             System.out.println("message has not been sent yet");
-            entries.add(checkerRequest.getId());
+            entries.add(checkerRequest.getEntryid());
             System.out.println(entries);
             return false;
         }

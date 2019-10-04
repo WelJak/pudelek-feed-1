@@ -3,9 +3,11 @@ package com.weljak.storageservice.message;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.List;
+
 
 @Entity
 @Getter
@@ -15,11 +17,16 @@ public class Tags {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
-    private String uuid;
+    private Long id;
 
-    @ManyToOne
-    @Column(name = "tags", nullable = false)
-    private News tags;
+    @Column(name = "tag", nullable = false)
+    private String tag;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="uuid", nullable = false)
+    private News uuid;
+
+
 
 }

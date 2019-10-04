@@ -6,7 +6,9 @@ import java.util.List;
 
 @Value
 public class CheckerRequest {
-    private String id;
+    private String uuid;
+    private String type;
+    private String entryid;
     private String date;
     private String title;
     private String description;

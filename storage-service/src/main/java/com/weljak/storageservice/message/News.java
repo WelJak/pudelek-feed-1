@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -14,15 +15,14 @@ import java.util.List;
 public class News {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uuid", unique = true, nullable = false, updatable = false)
     private String uuid;
 
     @Column(name = "type", nullable = false)
     private String type;
 
-    @Column(name = "entry_id", unique = true, nullable = false)
-    private String entry_id;
+    @Column(name = "entryid", nullable = false)
+    private String entryid;
 
     @Column(name = "post_date", nullable = false)
     private String post_date;
@@ -33,8 +33,8 @@ public class News {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "tags")
-    private List<Tags> tags;
+    @OneToMany(mappedBy = "uuid")
+    private Set<Tags> tags;
 
     @Column(name ="link", nullable = false)
     private String link;
