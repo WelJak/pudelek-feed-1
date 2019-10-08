@@ -1,19 +1,17 @@
-package com.weljak.storageservice.message;
+package com.weljak.storageservice.news;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "news")
+@Builder
 public class News {
 
     @Id
@@ -35,7 +33,11 @@ public class News {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "uuid")
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JoinColumn(name = "uuid")
     private List<Tags> tag;
 
     @Column(name = "link", nullable = false)

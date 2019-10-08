@@ -15,12 +15,12 @@ public class CheckerController {
 
     @PostMapping("/check")
     public ResponseEntity<CheckerResponse> checkMessage(@RequestBody CheckerRequest checkerRequest) {
-        if (checkerService.checkIfMessageWasSent(checkerRequest) == true) {
-            return new ResponseEntity(checkerService.sendMessage(checkerRequest), HttpStatus.OK);
-        } else {
-            System.out.println("juz wyslano");
-            return new ResponseEntity(checkerService.checkIfMessageWasSent(checkerRequest), HttpStatus.OK);
+        boolean wasSent = checkerService.checkIfMessageWasSent(checkerRequest);
+        CheckerResponse response = new CheckerResponse(wasSent);
+        if (wasSent) {
+            System.out.println("Wysłano");
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
