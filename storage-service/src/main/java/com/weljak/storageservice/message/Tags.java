@@ -3,6 +3,8 @@ package com.weljak.storageservice.message;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -21,7 +23,7 @@ public class Tags {
     private String tag;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    //@OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "uuid", nullable = false)
     private News uuid;
 
