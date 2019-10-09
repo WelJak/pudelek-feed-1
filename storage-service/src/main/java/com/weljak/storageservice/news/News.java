@@ -2,6 +2,7 @@ package com.weljak.storageservice.news;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "news")
 @Builder
+@Data
 public class News {
 
     @Id
@@ -42,4 +44,7 @@ public class News {
 
     @Column(name = "link", nullable = false)
     private String link;
+
+    @Column(name = "was_sent")
+    private boolean wassent;
 }
