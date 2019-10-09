@@ -33,7 +33,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>@Data
+            <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
@@ -50,6 +50,7 @@
     </dependencies>
 
     <build>
+        <finalName>app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

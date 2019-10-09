@@ -48,3 +48,16 @@ services:
     restart: always
     ports:
       - "8888:8080"
+
+#TODO TU JEST JAKIS BLAD - HIBERNATE RZUCA JAKIMS KIEDY SPRING RUSZA ALE TWORZY TABELKI
+  storage-service:
+    build:
+      context: ./storage-service
+      dockerfile: docker/Dockerfile
+    environment:
+      PROFILE: dev
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
