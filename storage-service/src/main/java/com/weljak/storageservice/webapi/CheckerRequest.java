@@ -14,5 +14,6 @@ public class CheckerRequest {
     private String description;
     private List<String> tags;
     private String link;
+    private boolean wassent;
 
 }

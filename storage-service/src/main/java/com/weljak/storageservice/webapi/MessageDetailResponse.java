@@ -15,4 +15,5 @@ public class MessageDetailResponse {
     private String description;
     private List<Tags> tags;
     private String link;
+    private boolean wassent;
 }

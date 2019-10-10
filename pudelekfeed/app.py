@@ -7,7 +7,7 @@ import logger
 from checker.inmemory_checker import *
 from rabbitmq_producer.rabbitmq_producer import *
 from scrapper.scrapper import *
-
+from wykopproducer.apiclient.api_client import *
 RABBIT_HOST = 'RABBIT_HOST'
 RABBIT_LOGIN = 'RABBIT_LOGIN'
 RABBIT_PASSWORD = 'RABBIT_PASSWORD'
@@ -32,11 +32,13 @@ class App:
             scrapper = Scrapper(WEBSITE_URL)
             checker = InMemoryChecker()
             producer = RabbitmqProducer(login, password, host, exchange, vhost, routing_key)
+            api_client = ApiClient()
             while 1:
                 news = scrapper.fetch_news_from_website()
-                news_to_send = list(filter(lambda message: checker.check(message), news))
-                messages = list(map(lambda message: self.create_message(message), news_to_send))
-                for msg in messages:
+                messages = list(map(lambda message: self.create_message(message), news))
+                to_send = list(filter(lambda message: api_client.checkIfMessageWasSent(message), messages))
+                print(to_send)
+                for msg in to_send:
                     response = producer.send_message(msg)
                     if response:
                         checker.mark(msg['message'])

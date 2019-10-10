@@ -1,7 +1,7 @@
 import json
 
 import requests
-
+import logger
 API_CHECK_MESSAGE_URL = 'http://localhost:8080/check'
 
 
@@ -26,4 +26,9 @@ class ApiClient:
             data=check_message_postparams,
             headers=check_message_headers
         )
-        return response.json()
+        if response.json()['issent']:
+            logger.info('message {} has been already sent'.format(message['message']['id']))
+            return False
+        else:
+            logger.info('message {} has not been sent yet'.format(message['message']['id']))
+            return True

@@ -53,6 +53,7 @@ public class DbCheckerService implements CheckerService {
                 .description(checkerRequest.getDescription())
                 .tag(convertToTagList(checkerRequest.getTags()))
                 .link(checkerRequest.getLink())
+                .wassent(checkerRequest.isWassent())
                 .build();
     }
 
