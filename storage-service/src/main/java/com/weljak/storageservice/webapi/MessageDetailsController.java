@@ -19,8 +19,17 @@ public class MessageDetailsController {
     public ResponseEntity<MessageDetailResponse> getMessage(@PathVariable String entryid, Model model) {
         final News entry = messageDetailService.getMessage(entryid);
         model.addAttribute("id", entry.getEntryid());
-        MessageDetailResponse messageDetailResponse = new MessageDetailResponse(entry.getUuid(), entry.getType(), entry.getEntryid(),
-                entry.getPost_date(), entry.getTitle(), entry.getDescription(), entry.getTag(), entry.getLink(), entry.isWassent());
+        MessageDetailResponse messageDetailResponse = new MessageDetailResponse(
+                entry.getUuid(),
+                entry.getType(),
+                entry.getEntryid(),
+                entry.getPost_date(),
+                entry.getTitle(),
+                entry.getDescription(),
+                entry.getTag(),
+                entry.getLink(),
+                entry.isWassent()
+        );
 
 
         return new ResponseEntity<>(messageDetailResponse, HttpStatus.OK);

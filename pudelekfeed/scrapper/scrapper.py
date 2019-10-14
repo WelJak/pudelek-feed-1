@@ -1,10 +1,11 @@
+import datetime
 import sys
 import traceback
-import logger
-import datetime
 from urllib.request import urlopen as ureq
 
 from bs4 import BeautifulSoup as Soup
+
+import logger
 
 
 class Scrapper:

@@ -1,6 +1,7 @@
 import configparser
 import os
 
+from apiclient.api_client import *
 from wykopproducer.checker.checker import *
 from wykopproducer.rabbitmq_listener.rabbitmq_listener import *
 from wykopproducer.wykop_client.wykop_client import *
@@ -24,31 +25,37 @@ class App:
     def __init__(self):
         self.api = None
         self.checker = Checker()
+        self.api_client = ApiClient()
 
     def publish_news(self, message):
-        if self.checker.check(message['message']):
+        if self.api_client.checkIfMessageWasSentToWykop(message['message']['id']):
             message_to_send = message
-        prepare_link_response = self.api.prepare_link_for_posting(message_to_send)
-        if 'error' in prepare_link_response:
-            logger.info('An error occured during preparing message: {}'.format(prepare_link_response['error']))
-            self.checker.mark(message_to_send['message'])
-        else:
-            prepare_thumbnail_response = self.api.prepare_news_thumbnail(prepare_link_response)
-            add_link_response = self.api.add_link_on_wykop(prepare_link_response,
-                                                           prepare_thumbnail_response,
-                                                           message_to_send)
-            if 'error' in add_link_response:
-                logger.info('An error ocured during posting message on wykop: {}'.format(add_link_response['error']))
+            prepare_link_response = self.api.prepare_link_for_posting(message_to_send)
+            if 'error' in prepare_link_response:
+                logger.info('An error occured during preparing message: {}'.format(prepare_link_response['error']))
+                self.api_client.markMessage(message_to_send)
             else:
-                add_entry_response = self.api.add_entry(add_link_response)
-                if add_entry_response:
-                    logger.info('message {} has been successfully sent to wykop.pl'.format(message_to_send['message']))
-                    self.checker.mark(message_to_send['message'])
+                prepare_thumbnail_response = self.api.prepare_news_thumbnail(prepare_link_response)
+                add_link_response = self.api.add_link_on_wykop(prepare_link_response,
+                                                               prepare_thumbnail_response,
+                                                               message_to_send)
+                if 'error' in add_link_response:
+                    logger.info(
+                        'An error ocured during posting message on wykop: {}'.format(add_link_response['error']))
+                else:
+                    add_entry_response = self.api.add_entry(add_link_response)
+                    if add_entry_response:
+                        logger.info(
+                            'message {} has been successfully sent to wykop.pl'.format(message_to_send['message']))
+                        self.api_client.markMessage(message_to_send)
+        else:
+            logger.info('message {} has been already sent to wykop'.format(message['message']['id']))
 
     def main(self):
         profile = os.getenv('ENVIRONMENT', DEFAULT_PROFILE)
         logger.info("Running wykop client with active profile: " + profile)
-        host, login, password, exchange, vhost, queue, appkey, secret, wykoplogin, acckey = self.read_config_file(profile)
+        host, login, password, exchange, vhost, queue, appkey, secret, wykoplogin, acckey = self.read_config_file(
+            profile)
         if profile == 'LOCAL':
             self.api = WykopClientMock(appkey, secret, wykoplogin, acckey)
             self.api.WYKOP_USER_KEY = self.api.log_in()

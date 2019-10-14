@@ -2,12 +2,12 @@ import configparser
 import os
 import time
 import uuid
-import logger
 
+from apiclient.api_client import *
 from checker.inmemory_checker import *
 from rabbitmq_producer.rabbitmq_producer import *
 from scrapper.scrapper import *
-from wykopproducer.apiclient.api_client import *
+
 RABBIT_HOST = 'RABBIT_HOST'
 RABBIT_LOGIN = 'RABBIT_LOGIN'
 RABBIT_PASSWORD = 'RABBIT_PASSWORD'
@@ -37,7 +37,6 @@ class App:
                 news = scrapper.fetch_news_from_website()
                 messages = list(map(lambda message: self.create_message(message), news))
                 to_send = list(filter(lambda message: api_client.checkIfMessageWasSent(message), messages))
-                print(to_send)
                 for msg in to_send:
                     response = producer.send_message(msg)
                     if response:
