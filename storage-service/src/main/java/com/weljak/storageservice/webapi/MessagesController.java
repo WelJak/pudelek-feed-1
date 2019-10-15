@@ -48,11 +48,9 @@ public class MessagesController {
     public ResponseEntity<MessageMarkResponse> markMessage(@PathVariable String entryid) {
         boolean response = messagesService.markMessage(entryid);
         if (response) {
-            String message = String.format("message %s has been successfully marked", entryid);
-            log.info(message);
+            log.info("message {} has been successfully  marked", entryid);
         } else {
-            String message = String.format("an error occurred during marking message %s", entryid);
-            log.info(message);
+            log.info("an error occurred during marking message {}", entryid);
         }
         MessageMarkResponse messageMarkResponse = new MessageMarkResponse(response);
         return new ResponseEntity<>(messageMarkResponse, HttpStatus.OK);
