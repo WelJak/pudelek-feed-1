@@ -31,9 +31,10 @@ public class DbMessagesService implements MessagesService {
             final News message = newsRepo.findByEntryid(entryid);
             message.setWassent(true);
             newsRepo.save(message);
+            log.info("message {} has been successfully  marked", entryid);
             return true;
         } catch (Exception e) {
-            log.info("an error occurred during process: ");
+            log.info("an error occurred during marking message {}: ", entryid);
             e.printStackTrace();
             return false;
         }
