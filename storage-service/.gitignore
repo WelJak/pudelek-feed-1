@@ -30,3 +30,5 @@ build/
 ### VS Code ###
 .vscode/
 /src/main/java/com/weljak/storageservice/teest.java
+/src/main/java/com/weljak/storageservice/apiclient/clientteees.java
+/src/main/java/com/weljak/storageservice/apiclient/userkey

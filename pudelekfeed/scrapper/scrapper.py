@@ -18,7 +18,7 @@ class Scrapper:
             page_html = client.read()
             client.close()
             page_soup = Soup(page_html, "html.parser")
-            entries = page_soup.findAll("div", {"class": "entry"})
+            entries = page_soup.findAll("div", {"class": "entry"})[1:]
             output = list(map(lambda part: self.create_output_part(part), entries))
             return output
         except:
