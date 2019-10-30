@@ -5,4 +5,5 @@ import lombok.Value;
 @Value
 public class PrepareLinkResponse {
     private String key;
+    private String title;
 }

@@ -75,7 +75,7 @@ public class WykopService implements WykopApiService {
     public PrepareLinkResponse prepareLinkForPosting(MessageToWykop message) {
         try {
             this.USERKEY = readUserKeyFromFile();
-            HttpPost post = createPost(WYKOP_LINK_DRAFT_URL + "appkey/" + APPKEY + "/userkey/" + "dsSRT:4YoSI:1d4Dc:5je4v:bjAQX:3K3v", message.getLink());
+            HttpPost post = createPost(WYKOP_LINK_DRAFT_URL + "appkey/" + APPKEY + "/userkey/" + USERKEY, message.getLink());
             List<NameValuePair> urlPostParams = new ArrayList<>();
             urlPostParams.add(new BasicNameValuePair("url", message.getLink()));
             post.setEntity(new UrlEncodedFormEntity(urlPostParams));
@@ -83,7 +83,9 @@ public class WykopService implements WykopApiService {
             String result = EntityUtils.toString(response.getEntity());
             JsonObject jsonResponse = gson.fromJson(result, JsonObject.class);
             JsonElement jsonLinkKey = jsonResponse.getAsJsonObject("data").getAsJsonPrimitive("key");
-            PrepareLinkResponse prepareLinkResponse = new PrepareLinkResponse(jsonLinkKey.toString().substring(1, jsonLinkKey.toString().length() - 1));
+            JsonElement jsonTitle = jsonResponse.getAsJsonObject("data").getAsJsonPrimitive("title");
+            PrepareLinkResponse prepareLinkResponse = new PrepareLinkResponse(jsonLinkKey.toString().substring(1, jsonLinkKey.toString().length() - 1),
+                    jsonTitle.toString().substring(1, jsonTitle.toString().length() - 1));
             return prepareLinkResponse;
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -111,15 +113,37 @@ public class WykopService implements WykopApiService {
     }
 
     public String addLinkOnWykop(PrepareLinkResponse prepareLinkResponse, PreparePhotoResponse preparePhotoResponse, MessageToWykop message) {
-        /*try{
-            String postparams;
-            HttpPost post = createPost(WYKOP_ADD_LINK_URL+"key/" + prepareLinkResponse.getKey()+"/appkey/"+ APPKEY + "/userkey/"+USERKEY,postparams);
-            return null;
-        }catch (IOException ioe) {
+        StringBuilder tagBuilder = new StringBuilder();
+        List<String> tags = message.getTags();
+        for (String tag : tags) {
+            tagBuilder.append(tag + ",");
+        }
+        String tagsString = tagBuilder.toString().replaceAll(" ", "");
+        tagsString = tagsString.substring(0, tagsString.length() - 1);
+        StringBuilder postBuilder = new StringBuilder();
+        String postparams = postBuilder.append(prepareLinkResponse.getTitle() + ",")
+                .append(message.getDescription() + ",")
+                .append(tagsString + ",")
+                .append(preparePhotoResponse.getPhotoKey() + ",")
+                .append(message.getLink())
+                .toString();
+        try {
+            HttpPost post = createPost(WYKOP_ADD_LINK_URL + "key/" + prepareLinkResponse.getKey() + "/appkey/" + APPKEY + "/userkey/" + USERKEY, postparams);
+            List<NameValuePair> urlPostParams = new ArrayList<>();
+            urlPostParams.add(new BasicNameValuePair("title", prepareLinkResponse.getTitle()));
+            urlPostParams.add(new BasicNameValuePair("description", message.getDescription()));
+            urlPostParams.add(new BasicNameValuePair("tags", tagsString));
+            urlPostParams.add(new BasicNameValuePair("photo", preparePhotoResponse.getPhotoKey()));
+            urlPostParams.add(new BasicNameValuePair("url", message.getLink()));
+            post.setEntity(new UrlEncodedFormEntity(urlPostParams, "UTF-8"));
+            CloseableHttpResponse response = client.execute(post);
+            String result = EntityUtils.toString(response.getEntity());
+            System.out.println(result);
+            return result;
+        } catch (IOException ioe) {
             ioe.printStackTrace();
             return null;
-        }*/
-        return null;
+        }
     }
 
 
