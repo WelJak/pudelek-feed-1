@@ -55,7 +55,7 @@ class ApiClient:
             headers=mark_message_headers
         )
 
-        if response.json()['sent_successfully']:
+        if response.json()['sentSuccessfully']:
             logger.info('message {} has been successfully marked'.format(message['message']['id']))
             return True
         else:
