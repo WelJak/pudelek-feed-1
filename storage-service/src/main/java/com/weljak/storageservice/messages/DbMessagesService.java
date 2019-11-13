@@ -16,7 +16,7 @@ public class DbMessagesService implements MessagesService {
     private final NewsRepo newsRepo;
 
     @Override
-    public List<String> getMessages() {
+    public List<String> getMessagesIdList() {
         List<News> newsList = newsRepo.findAll();
         List<String> response_array = new ArrayList<>();
         for (int i = 0; i < newsList.size(); i++) {
@@ -46,4 +46,9 @@ public class DbMessagesService implements MessagesService {
         return message;
     }
 
+    @Override
+    public List<News> listAllMessages() {
+        List<News> listOfNews = (List<News>) newsRepo.findAll();
+        return listOfNews;
+    }
 }

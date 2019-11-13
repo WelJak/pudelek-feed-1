@@ -19,9 +19,9 @@ import java.util.List;
 public class MessagesController {
     private final MessagesService messagesService;
 
-    @GetMapping("/messages")
+    @GetMapping("/messagesId")
     public ResponseEntity<MessagesResponse> getMessages() {
-        List<String> response_array = messagesService.getMessages();
+        List<String> response_array = messagesService.getMessagesIdList();
         MessagesResponse response = new MessagesResponse(response_array);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -49,6 +49,13 @@ public class MessagesController {
         boolean response = messagesService.markMessage(entryid);
         MessageMarkResponse messageMarkResponse = new MessageMarkResponse(response);
         return new ResponseEntity<>(messageMarkResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/messages/all")
+    public ResponseEntity<AllMessagesResponse> getAllMessages(){
+        List<News> responseArray = messagesService.listAllMessages();
+        AllMessagesResponse response = new AllMessagesResponse(responseArray);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

@@ -8,4 +8,5 @@ public interface NewsRepo extends JpaRepository<News, String> {
     boolean existsByEntryid(String entryid);
 
     News findByEntryid(String entryid);
+
 }
