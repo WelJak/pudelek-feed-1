@@ -4,6 +4,7 @@ import com.weljak.feeddashboard.domain.News;
 
 import java.util.List;
 
-public interface EntriesService {
+public interface EntriesRepository {
     List<News> listAllEntries();
+    News getEntryDetails(String id);
 }

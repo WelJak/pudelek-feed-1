@@ -29,12 +29,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="wpis : ${entry}">
-                <td th:text="${wpis.entryid}"></td>
-                <td th:text="${wpis.description}"></td>
-                <td th:text="${wpis.title}"></td>
-                <td th:text="${wpis.type}"></td>
-                <td><a th:href="${wpis.link}">Link</a></td>
+            <tr th:each="e : ${entry}">
+                <td><a th:href="@{/entries/{entryid}(entryid = ${e.entryid})}"><p th:text="${e.entryid}"></p></a></td>
+                <td th:text="${e.description}"></td>
+                <td th:text="${e.title}"></td>
+                <td th:text="${e.type}"></td>
+                <td><a th:href="${e.link}">Link</a></td>
             </tr>
             </tbody>
             <tfoot>
