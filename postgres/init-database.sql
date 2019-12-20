@@ -16,3 +16,10 @@ create table tags (id  bigserial not null,
                     primary key (id))
 
 alter table if exists tags add constraint tags_uuid_unq foreign key (uuid) references news
+
+create table admins (login varchar(255) not null, unique,
+                    password varchar(255) not null,
+                    primary key (login))
+
+insert into admins
+values ('admin', 'asd')

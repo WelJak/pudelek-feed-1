@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dashboard</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body>
+<div th:include="@{header}"></div>
+<!--<div class="jumbotron text-center">-->
+<!--    <h1 th:inline="text">-->
+<!--        Sign in-->
+<!--    </h1>-->
+<!--    <form>-->
+<!--        <div class="form-group">-->
+<!--            <label for="loginInput">Login</label>-->
+<!--            <input type="text" class="col-sm-3 col-form-label" id="loginInput"  placeholder="Login">-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <label for="passwordInput">Password</label>-->
+<!--            <input type="password" class="col-sm-3 col-form-label" id="passwordInput" placeholder="Password">-->
+<!--        </div>-->
+<!--        <button type="submit" class="btn btn-primary">Submit</button>-->
+<!--    </form>-->
+<!--</div>-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3">
+
+            <form th:action="@{/pudelek/admin/panel/login}" method="POST" class="form-horizontal">
+                <div class="form-group">
+                    <input class="form-control input-lg" type="text" id="login" name="login"
+                           th:placeholder="login"/>
+                </div>
+                <div class="form-group">
+                    <input class="form-control input-lg" type="password" id="password" name="password"
+                           th:placeholder="password"/>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg">Submit
+                    </button>
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+        </div>
+        <div class="col-sm-6"></div>
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
