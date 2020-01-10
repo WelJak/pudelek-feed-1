@@ -65,6 +65,7 @@ public class DbCheckerService implements CheckerService {
             return true;
         } catch (Exception e) {
             System.out.println("something went wrong");
+            e.printStackTrace();
             return false;
         }
 
